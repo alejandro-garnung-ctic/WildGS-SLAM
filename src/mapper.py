@@ -265,6 +265,16 @@ class Mapper(object):
 
             self.pipe.send("continue")
 
+            # live viewer: periodic PLY save
+            _live_every = int(__import__('os').environ.get('WILDGS_LIVE_SAVE_EVERY', '5'))
+            if len(self.video_idxs) > 0 and len(self.video_idxs) % _live_every == 0:
+                try:
+                    import os as _os
+                    _os.makedirs(self.save_dir, exist_ok=True)
+                    self.gaussians.save_ply(_os.path.join(self.save_dir, 'live_preview.ply'))
+                except Exception:
+                    pass
+
     """
     Utility functions
     """
